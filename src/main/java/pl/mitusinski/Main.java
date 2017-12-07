@@ -18,7 +18,7 @@ public class Main extends Application {
 
     public static final int SCENE_HEIGHT = 400;
     public static final int SCENE_WIDTH = 600;
-    public static final String MAIN_FORM = "mainForm.fxml";
+    public static final String MAIN_FORM = "/mainForm.fxml";
     public static final String DATA_FILE = "data.xml";
     public static final String APP_TITLE = "Quizy";
     public static final String MSG_UPDATE_IN_PROG = "Quizy - pobieranie...";
