@@ -146,7 +146,7 @@ public class QuizUpdater extends Thread {
             return UNKNOWN;
         }
 
-        Pattern spanish = Pattern.compile("[¿¡]+");
+        Pattern spanish = Pattern.compile("[¿¡ñáéíú]+");
         Pattern polish = Pattern.compile("[ąćłżźęśń]+"); // ó może być i w hiszpańskim i w polskim tekście
 
         if (spanish.matcher(title).find()) {

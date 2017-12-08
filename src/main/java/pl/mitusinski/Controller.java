@@ -73,11 +73,19 @@ public class Controller {
         titleColumn.setCellValueFactory(cellData -> cellData.getValue().getTitleProperty());
     }
 
-    public void polishOnly(ActionEvent actionEvent) {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage("PL"));
+    public void polishOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.PL));
     }
 
-    public void spanishOnly(ActionEvent actionEvent) {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage("ES"));
+    public void spanishOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.ES));
+    }
+
+    public void unknownOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.UNKNOWN));
+    }
+
+    public void allLanguages() {
+        updateTableData(main.getQuizList().getObservableFilteredQuizList(""));
     }
 }

@@ -32,6 +32,8 @@
                   <Menu mnemonicParsing="false" text="Filtruj po języku">
                       <MenuItem mnemonicParsing="false" onAction="#polishOnly" text="Polski" />
                       <MenuItem mnemonicParsing="false" onAction="#spanishOnly" text="Hiszpański" />
+                      <MenuItem mnemonicParsing="false" onAction="#unknownOnly" text="Nieznany" />
+                      <MenuItem mnemonicParsing="false" onAction="#allLanguages" text="Wszystkie" />
                   </Menu>
                   <MenuItem mnemonicParsing="false" onAction="#refreshList" text="Odśwież listę"/>
               </items>
