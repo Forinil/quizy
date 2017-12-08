@@ -16,20 +16,20 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    public static final int SCENE_HEIGHT = 400;
-    public static final int SCENE_WIDTH = 600;
-    public static final String MAIN_FORM = "/mainForm.fxml";
+    private static final int SCENE_HEIGHT = 400;
+    private static final int SCENE_WIDTH = 600;
+    private static final String MAIN_FORM = "/mainForm.fxml";
     public static final String DATA_FILE = "data.xml";
-    public static final String APP_TITLE = "Quizy";
-    public static final String MSG_UPDATE_IN_PROG = "Quizy - pobieranie...";
-    public static final String MSG_UPDATE_COMPL = "Quizy - aktualna lista [ Nowych: %d]";
+    private static final String APP_TITLE = "Quizy";
+    private static final String MSG_UPDATE_IN_PROG = "Quizy - pobieranie...";
+    private static final String MSG_UPDATE_COMPL = "Quizy - aktualna lista [ Nowych: %d]";
 
     private static Stage primaryStage;
     private static QuizList quizList = new QuizList();
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
+    public void start(Stage primaryStage) {
+        Main.primaryStage = primaryStage;
         initScene();
     }
 
@@ -77,7 +77,7 @@ public class Main extends Application {
     }
 
     private QuizList loadQuizFromXml() {
-        File file = new File("data.xml");
+        File file = new File(DATA_FILE);
         try {
             JAXBContext jaxb = JAXBContext.newInstance(QuizList.class);
             Unmarshaller unm = jaxb.createUnmarshaller();

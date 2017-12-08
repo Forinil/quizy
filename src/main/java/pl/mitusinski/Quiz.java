@@ -15,9 +15,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Quiz {
 
     public Quiz() {
+        setId("");
+        setTitle("");
+        setDesc("");
+        setAdded("");
+        setCorrupted("");
+        setLanguage("");
     }
 
     public Quiz(String id, String title, String desc, String added, String corrupted) {
+        this();
         setId(id);
         setTitle(title);
         setDesc(desc);
@@ -25,11 +32,17 @@ public class Quiz {
         setCorrupted(corrupted);
     }
 
+    public Quiz(String id, String title, String desc, String added, String corrupted, String language) {
+        this(id, title, desc, added, corrupted);
+        setLanguage(language);
+    }
+
     private StringProperty id = new SimpleStringProperty();
     private StringProperty title = new SimpleStringProperty();
     private StringProperty desc = new SimpleStringProperty();
     private StringProperty added = new SimpleStringProperty();
     private StringProperty corrupted = new SimpleStringProperty();
+    private StringProperty language = new SimpleStringProperty();
 
     public StringProperty getIdProperty() {
         return id;
@@ -49,6 +62,10 @@ public class Quiz {
 
     public StringProperty getCorruptedProperty() {
         return corrupted;
+    }
+
+    public StringProperty getLanguageProperty() {
+        return language;
     }
 
     public String getId() {
@@ -87,8 +104,16 @@ public class Quiz {
         return getCorruptedProperty().get();
     }
 
-    public void setCorrupted(String Corrupted) {
-        getCorruptedProperty().set(Corrupted);
+    public void setCorrupted(String corrupted) {
+        getCorruptedProperty().set(corrupted);
+    }
+
+    public String getLanguage() {
+        return getLanguageProperty().get();
+    }
+
+    public void setLanguage(String language) {
+        getLanguageProperty().set(language);
     }
 
 }

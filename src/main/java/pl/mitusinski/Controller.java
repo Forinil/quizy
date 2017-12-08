@@ -1,6 +1,7 @@
 package pl.mitusinski;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,15 +19,15 @@ public class Controller {
 
     @FXML
     private TableView<Quiz> tableView;
+
     @FXML
     private TableColumn<Quiz, String> idColumn;
+
     @FXML
     private TableColumn<Quiz, String> titleColumn;
+
     @FXML
     private TextField searchQuery;
-
-    private Stage primaryStage;
-    private String filterString;
 
     @FXML
     private void initialize() {
@@ -38,7 +39,7 @@ public class Controller {
     }
 
     public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        Stage primaryStage1 = primaryStage;
     }
 
     public void updateList() {
@@ -56,7 +57,7 @@ public class Controller {
     }
 
     public void filterList() {
-        filterString = searchQuery.getText();
+        String filterString = searchQuery.getText();
         updateTableData(main.getQuizList().getObservableFilteredQuizList(filterString));
     }
 
@@ -70,5 +71,13 @@ public class Controller {
         tableView.setItems(observableList);
         idColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         titleColumn.setCellValueFactory(cellData -> cellData.getValue().getTitleProperty());
+    }
+
+    public void polishOnly(ActionEvent actionEvent) {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage("PL"));
+    }
+
+    public void spanishOnly(ActionEvent actionEvent) {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage("ES"));
     }
 }

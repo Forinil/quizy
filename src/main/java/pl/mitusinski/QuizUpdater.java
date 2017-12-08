@@ -11,9 +11,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 /**
  * Created by Łukasz on 18.05.2017.
@@ -27,6 +27,11 @@ public class QuizUpdater extends Thread {
     private static final String QUIZ_URL = "http://wiadomosci.gazeta.pl/wiadomosci/13,129662,{id},x.html";
     private static final String ID_TAG = "{id}";
     private static final int MAX_FAILURES = 10;
+
+    // języki
+    public static final String UNKNOWN = "UNKNOWN";
+    public static final String ES = "ES";
+    public static final String PL = "PL";
 
     private BooleanProperty sync = new SimpleBooleanProperty(false);
     private int count = 0;
@@ -44,34 +49,45 @@ public class QuizUpdater extends Thread {
         QuizList quizList = getQuizList();
         List<Quiz> list = quizList.getQuizList();
         List<Quiz> newList = new ArrayList<>();
-        list.sort((q1, q2) -> new Integer(q1.getId()).compareTo(new Integer(q2.getId())));
+        list.sort(Comparator.comparing(q2 -> new Integer(q2.getId())));
         int next = Integer.parseInt(list.get(0).getId());
 
         for (Quiz q : list) {
             next++;
             while (Integer.parseInt(q.getId()) > next) {
-                Quiz quizData = getQuizData(next);
-                if (quizData.getCorrupted().equals("N")){
-                    count++;
-                }
-                newList.add(quizData);
+                Optional<Quiz> quizData = getQuizData(next);
+                quizData.ifPresent(quiz -> {
+                    if (quiz.getCorrupted().equals("N")){
+                        count++;
+                    }
+                    newList.add(quiz);
+                });
                 next++;
             }
+
+            if (q.getLanguage() == null || q.getLanguage().isEmpty() || q.getLanguage().equals(UNKNOWN)) {
+                String language = getLanguage(q.getCorrupted(), q.getTitle());
+                q.setLanguage(language);
+            }
+
             newList.add(q);
         }
 
         setQuizList(new QuizList(newList));
-        int failures = 0;
-        while (failures < MAX_FAILURES) {
+        AtomicInteger failures = new AtomicInteger();
+        while (failures.get() < MAX_FAILURES) {
             next++;
-            Quiz quizData = getQuizData(next);
-            if (quizData == null || !"N".equals(quizData.getCorrupted())) {
-                failures++;
-            } else {
-                failures = 0;
-                count++;
-                newList.add(quizData);
-            }
+            Optional<Quiz> quizData = getQuizData(next);
+
+            quizData.ifPresent(quiz -> {
+                if (!"N".equals(quiz.getCorrupted())) {
+                    failures.getAndIncrement();
+                } else {
+                    failures.set(0);
+                    count++;
+                    newList.add(quiz);
+                }
+            });
         }
         setQuizList(new QuizList(newList));
         try {
@@ -82,7 +98,7 @@ public class QuizUpdater extends Thread {
         sync.set(false);
     }
 
-    public QuizList getQuizList() {
+    private QuizList getQuizList() {
         File file = new File(Main.DATA_FILE);
         QuizList quizList = new QuizList();
         try {
@@ -95,9 +111,9 @@ public class QuizUpdater extends Thread {
         return quizList;
     }
 
-    public void setQuizList(QuizList quizList) {
+    private void setQuizList(QuizList quizList) {
         File file = new File(Main.DATA_FILE);
-        JAXBContext jaxb = null;
+        JAXBContext jaxb;
         try {
             jaxb = JAXBContext.newInstance(QuizList.class);
             Marshaller msh = jaxb.createMarshaller();
@@ -107,7 +123,7 @@ public class QuizUpdater extends Thread {
         }
     }
 
-    private Quiz getQuizData(int id) {
+    private Optional<Quiz> getQuizData(int id) {
         String url = getUrl(id);
         try {
             Document doc = Jsoup.connect(url).get();
@@ -117,12 +133,31 @@ public class QuizUpdater extends Thread {
             boolean hasLink = doc.select(QUERY_HAS_LINK).size() > 0;
             Date added = new Date();
             String corrupted = !title.isEmpty() && hasLink ? "N" : "Y";
-            Quiz quiz = new Quiz(Integer.toString(id), title, desc, added.toString(), corrupted);
-            return quiz;
+            String language = getLanguage(corrupted, title);
+            return Optional.of(new Quiz(Integer.toString(id), title, desc, added.toString(), corrupted, language));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
+    }
+
+    private String getLanguage(String corrupted, String title) {
+        if (corrupted.equals("Y")) {
+            return UNKNOWN;
+        }
+
+        Pattern spanish = Pattern.compile("[¿¡]+");
+        Pattern polish = Pattern.compile("[ąćłżźęśń]+"); // ó może być i w hiszpańskim i w polskim tekście
+
+        if (spanish.matcher(title).find()) {
+            return ES;
+        }
+
+        if (polish.matcher(title).find()) {
+            return PL;
+        }
+
+        return UNKNOWN;
     }
 
     public BooleanProperty getSync() {
@@ -131,8 +166,7 @@ public class QuizUpdater extends Thread {
 
     public static String getUrl(int id) {
         String quizId = String.format("%4s", Integer.toString(id)).replace(" ", "0");
-        String url = QUIZ_URL.replace(ID_TAG, quizId);
-        return url;
+        return QUIZ_URL.replace(ID_TAG, quizId);
     }
 
     public int getNewCount() {
