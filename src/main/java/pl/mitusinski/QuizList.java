@@ -47,9 +47,17 @@ public class QuizList {
         return list;
     }
 
+    public ObservableList<Quiz> getObservableQuizListFilteredByLanguage(String language) {
+        ObservableList<Quiz> list = FXCollections.observableArrayList();
+        quizList.stream()
+                .filter(q -> q != null && "N".equals(q.getCorrupted()))
+                .filter(q -> q.getLanguage().equals(language))
+                .forEach(list::add);
+        Collections.reverse(list);
+        return list;
+    }
+
     public List<Quiz> getQuizList() {
         return quizList;
     }
-
-
 }

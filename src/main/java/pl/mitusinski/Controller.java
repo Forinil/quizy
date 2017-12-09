@@ -13,20 +13,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Controller {
-
     private Main main;
 
     @FXML
     private TableView<Quiz> tableView;
+
     @FXML
     private TableColumn<Quiz, String> idColumn;
+
     @FXML
     private TableColumn<Quiz, String> titleColumn;
+
+    @FXML
+    public TableColumn<Quiz, String> languageColumn;
+
     @FXML
     private TextField searchQuery;
-
-    private Stage primaryStage;
-    private String filterString;
 
     @FXML
     private void initialize() {
@@ -38,7 +40,7 @@ public class Controller {
     }
 
     public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        Stage primaryStage1 = primaryStage;
     }
 
     public void updateList() {
@@ -56,7 +58,7 @@ public class Controller {
     }
 
     public void filterList() {
-        filterString = searchQuery.getText();
+        String filterString = searchQuery.getText();
         updateTableData(main.getQuizList().getObservableFilteredQuizList(filterString));
     }
 
@@ -70,5 +72,26 @@ public class Controller {
         tableView.setItems(observableList);
         idColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         titleColumn.setCellValueFactory(cellData -> cellData.getValue().getTitleProperty());
+        languageColumn.setCellValueFactory(cellData -> cellData.getValue().getLanguageProperty());
+    }
+
+    public void polishOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.PL));
+    }
+
+    public void spanishOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.ES));
+    }
+
+    public void englishOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.EN));
+    }
+
+    public void unknownOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.UNKNOWN));
+    }
+
+    public void allLanguages() {
+        updateTableData(main.getQuizList().getObservableFilteredQuizList(""));
     }
 }
