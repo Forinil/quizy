@@ -4,11 +4,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.XMLConstants;
+import javax.xml.bind.*;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -102,10 +103,15 @@ public class QuizUpdater extends Thread {
         File file = new File(Main.DATA_FILE);
         QuizList quizList = new QuizList();
         try {
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = sf.newSchema(this.getClass().getResource(Main.DATA_FILE_XSD));
+
             JAXBContext jaxb = JAXBContext.newInstance(QuizList.class);
             Unmarshaller unm = jaxb.createUnmarshaller();
+            unm.setSchema(schema);
+            unm.setEventHandler(new QuizFileValidationEventHandler());
             quizList = (QuizList) unm.unmarshal(file);
-        } catch (JAXBException e) {
+        } catch (JAXBException | SAXException e) {
             e.printStackTrace();
         }
         return quizList;
@@ -115,10 +121,15 @@ public class QuizUpdater extends Thread {
         File file = new File(Main.DATA_FILE);
         JAXBContext jaxb;
         try {
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = sf.newSchema(this.getClass().getResource(Main.DATA_FILE_XSD));
+
             jaxb = JAXBContext.newInstance(QuizList.class);
             Marshaller msh = jaxb.createMarshaller();
+            msh.setSchema(schema);
+            msh.setEventHandler(new QuizFileValidationEventHandler());
             msh.marshal(quizList, file);
-        } catch (JAXBException e) {
+        } catch (JAXBException | SAXException e) {
             e.printStackTrace();
         }
     }
@@ -171,5 +182,23 @@ public class QuizUpdater extends Thread {
 
     public int getNewCount() {
         return count;
+    }
+
+    private class QuizFileValidationEventHandler implements ValidationEventHandler {
+
+        public boolean handleEvent(ValidationEvent event) {
+            System.out.println("\nEVENT");
+            System.out.println("SEVERITY:  " + event.getSeverity());
+            System.out.println("MESSAGE:  " + event.getMessage());
+            System.out.println("LINKED EXCEPTION:  " + event.getLinkedException());
+            System.out.println("LOCATOR");
+            System.out.println("    LINE NUMBER:  " + event.getLocator().getLineNumber());
+            System.out.println("    COLUMN NUMBER:  " + event.getLocator().getColumnNumber());
+            System.out.println("    OFFSET:  " + event.getLocator().getOffset());
+            System.out.println("    OBJECT:  " + event.getLocator().getObject());
+            System.out.println("    NODE:  " + event.getLocator().getNode());
+            System.out.println("    URL:  " + event.getLocator().getURL());
+            return true;
+        }
     }
 }

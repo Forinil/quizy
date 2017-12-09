@@ -20,6 +20,7 @@ public class Main extends Application {
     private static final int SCENE_WIDTH = 600;
     private static final String MAIN_FORM = "/mainForm.fxml";
     public static final String DATA_FILE = "data.xml";
+    public static final String DATA_FILE_XSD = "/data.xsd";
     private static final String APP_TITLE = "Quizy";
     private static final String MSG_UPDATE_IN_PROG = "Quizy - pobieranie...";
     private static final String MSG_UPDATE_COMPL = "Quizy - aktualna lista [ Nowych: %d]";
