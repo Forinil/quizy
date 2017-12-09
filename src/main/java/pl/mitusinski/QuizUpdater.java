@@ -1,5 +1,10 @@
 package pl.mitusinski;
 
+import com.basistech.rosette.api.HttpRosetteAPI;
+import com.basistech.rosette.apimodel.DocumentRequest;
+import com.basistech.rosette.apimodel.LanguageDetectionResult;
+import com.basistech.rosette.apimodel.LanguageOptions;
+import com.basistech.rosette.apimodel.LanguageResponse;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import org.jsoup.Jsoup;
@@ -29,10 +34,19 @@ public class QuizUpdater extends Thread {
     private static final String ID_TAG = "{id}";
     private static final int MAX_FAILURES = 10;
 
-    // języki
+    // language codes
     public static final String UNKNOWN = "UNKNOWN";
     public static final String ES = "ES";
     public static final String PL = "PL";
+    public static final String EN = "EN";
+
+    // property codes
+    private static final String KEY_PROP_NAME = "rosette.api.key";
+    private static final String URL_PROP_NAME = "rosette.api.altUrl";
+    private static final String RESOLVE_UNKNOWNS_PROP_NAME = "resolveUnknown";
+
+    private static final String SPANISH_SYMBOLS = "¿¡ñáéíú";
+    private static final String POLISH_SYMBOLS = "ąćłżźęśń";
 
     private BooleanProperty sync = new SimpleBooleanProperty(false);
     private int count = 0;
@@ -66,7 +80,7 @@ public class QuizUpdater extends Thread {
                 next++;
             }
 
-            if (q.getLanguage() == null || q.getLanguage().isEmpty() || q.getLanguage().equals(UNKNOWN)) {
+            if (tryDetectingLanguage(q)) {
                 String language = getLanguage(q.getCorrupted(), q.getTitle());
                 q.setLanguage(language);
             }
@@ -99,6 +113,15 @@ public class QuizUpdater extends Thread {
         sync.set(false);
     }
 
+    private boolean tryDetectingLanguage(Quiz q) {
+        if (getResolveUnknownsFromSystemProperty()) {
+            return q.getLanguage() == null || q.getLanguage().isEmpty() || q.getLanguage().equals(UNKNOWN);
+        } else {
+            return q.getLanguage() == null || q.getLanguage().isEmpty();
+        }
+
+    }
+
     private QuizList getQuizList() {
         File file = new File(Main.DATA_FILE);
         QuizList quizList = new QuizList();
@@ -128,6 +151,7 @@ public class QuizUpdater extends Thread {
             Marshaller msh = jaxb.createMarshaller();
             msh.setSchema(schema);
             msh.setEventHandler(new QuizFileValidationEventHandler());
+            msh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
             msh.marshal(quizList, file);
         } catch (JAXBException | SAXException e) {
             e.printStackTrace();
@@ -157,8 +181,8 @@ public class QuizUpdater extends Thread {
             return UNKNOWN;
         }
 
-        Pattern spanish = Pattern.compile("[¿¡ñáéíú]+");
-        Pattern polish = Pattern.compile("[ąćłżźęśń]+"); // ó może być i w hiszpańskim i w polskim tekście
+        Pattern spanish = Pattern.compile("[" + SPANISH_SYMBOLS + "]+");
+        Pattern polish = Pattern.compile("[" + POLISH_SYMBOLS + "]+"); // letter ó can be present both in Spanish and Polish text
 
         if (spanish.matcher(title).find()) {
             return ES;
@@ -168,7 +192,57 @@ public class QuizUpdater extends Thread {
             return PL;
         }
 
-        return UNKNOWN;
+        Optional<String> rosettaAPIKey = getApiKeyFromSystemProperty();
+        if (!rosettaAPIKey.isPresent()) {
+            return UNKNOWN;
+        } else {
+            return detectLanguageViaRosetta(rosettaAPIKey.get(), title);
+        }
+    }
+
+    private String detectLanguageViaRosetta(String rosettaAPIKey,String text) {
+        String language = UNKNOWN;
+
+        HttpRosetteAPI rosetteApi = new HttpRosetteAPI.Builder()
+                .key(rosettaAPIKey)
+                .url(getAltUrlFromSystemProperty())
+                .build();
+        //The api object creates an http client, but to provide your own:
+        //api.httpClient(CloseableHttpClient)
+        DocumentRequest<LanguageOptions> request = new DocumentRequest.Builder<LanguageOptions>().content(text).build();
+        LanguageResponse response = rosetteApi.perform(HttpRosetteAPI.LANGUAGE_SERVICE_PATH, request, LanguageResponse.class);
+        Optional<LanguageDetectionResult> detectedLanguage = response.getLanguageDetections()
+                .stream()
+                .max(Comparator.comparing(LanguageDetectionResult::getConfidence));
+
+        if (detectedLanguage.isPresent()) {
+            LanguageDetectionResult languageDetectionResult = detectedLanguage.get();
+            language = languageDetectionResult.getLanguage().ISO639_1().toUpperCase();
+        }
+
+        return language;
+    }
+
+    private Boolean getResolveUnknownsFromSystemProperty() {
+        String resolveUnknowns = System.getProperty(RESOLVE_UNKNOWNS_PROP_NAME);
+        return resolveUnknowns != null && resolveUnknowns.trim().length() >= 1 && Boolean.parseBoolean(resolveUnknowns.trim());
+    }
+
+    private Optional<String> getApiKeyFromSystemProperty() {
+        String apiKeyStr = System.getProperty(KEY_PROP_NAME);
+        if (apiKeyStr == null || apiKeyStr.trim().length() < 1) {
+            System.out.println("Error: API key is not set");
+            return Optional.empty();
+        }
+        return Optional.of(apiKeyStr.trim());
+    }
+
+    private String getAltUrlFromSystemProperty() {
+        String altUrlStr = System.getProperty(URL_PROP_NAME);
+        if (altUrlStr == null || altUrlStr.trim().length() < 1) {
+            altUrlStr = "https://api.rosette.com/rest/v1";
+        }
+        return altUrlStr.trim();
     }
 
     public BooleanProperty getSync() {

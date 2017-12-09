@@ -1,7 +1,6 @@
 package pl.mitusinski;
 
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -14,7 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Controller {
-
     private Main main;
 
     @FXML
@@ -25,6 +23,9 @@ public class Controller {
 
     @FXML
     private TableColumn<Quiz, String> titleColumn;
+
+    @FXML
+    public TableColumn<Quiz, String> languageColumn;
 
     @FXML
     private TextField searchQuery;
@@ -71,6 +72,7 @@ public class Controller {
         tableView.setItems(observableList);
         idColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         titleColumn.setCellValueFactory(cellData -> cellData.getValue().getTitleProperty());
+        languageColumn.setCellValueFactory(cellData -> cellData.getValue().getLanguageProperty());
     }
 
     public void polishOnly() {
@@ -79,6 +81,10 @@ public class Controller {
 
     public void spanishOnly() {
         updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.ES));
+    }
+
+    public void englishOnly() {
+        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.EN));
     }
 
     public void unknownOnly() {
