@@ -8,30 +8,39 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.mitusinski.Controller">
-   <children>
-      <TableView fx:id="tableView" editable="true" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <columns>
-          <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" text="ID" />
-          <TableColumn fx:id="titleColumn" maxWidth="550.0" minWidth="550.0" prefWidth="550.0" resizable="false" text="Quiz" />
-        </columns>
-         <contextMenu>
-            <ContextMenu>
+<AnchorPane maxHeight="400.0" maxWidth="700.0" minHeight="400.0" minWidth="700.0" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pl.mitusinski.Controller">
+    <TableView fx:id="tableView" editable="true" prefHeight="400.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0"
+               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <columns>
+          <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" text="ID"/>
+          <TableColumn fx:id="titleColumn" maxWidth="550.0" minWidth="550.0" prefWidth="550.0" resizable="false"
+                       text="Quiz"/>
+          <TableColumn fx:id="languageColumn" maxWidth="100.0" minWidth="100.0" prefWidth="550.0" resizable="false"
+                       text="Język"/>
+      </columns>
+        <contextMenu>
+          <ContextMenu>
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#openInBrowser" text="Otwórz w przeglądarce" />
+                  <MenuItem mnemonicParsing="false" onAction="#openInBrowser" text="Otwórz w przeglądarce"/>
                   <Menu mnemonicParsing="false" text="Filtruj...">
-                    <items>
-                      <MenuItem mnemonicParsing="false">
-                           <graphic>
-                              <TextField fx:id="searchQuery" onKeyReleased="#filterList" />
-                           </graphic>
-                        </MenuItem>
-                    </items>
+                      <MenuItem mnemonicParsing="false" onAction="#polishOnly" text="Polski" />
+                      <MenuItem mnemonicParsing="false" onAction="#spanishOnly" text="Hiszpański" />
+                      <MenuItem mnemonicParsing="false" onAction="#englishOnly" text="Angielski" />
+                      <MenuItem mnemonicParsing="false" onAction="#unknownOnly" text="Nieznany" />
+                      <MenuItem mnemonicParsing="false" onAction="#allLanguages" text="Wszystkie" />
+                      <Menu mnemonicParsing="false" text="Zawierające frazę" >
+                          <MenuItem mnemonicParsing="false">
+                              <graphic>
+                                  <TextField fx:id="searchQuery" onKeyReleased="#filterList"/>
+                              </graphic>
+                          </MenuItem>
+                      </Menu>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" onAction="#refreshList" text="Odśwież listę" />
+                  <MenuItem mnemonicParsing="false" onAction="#refreshList" text="Odśwież listę"/>
               </items>
-            </ContextMenu>
-         </contextMenu>
-      </TableView>
-   </children>
+          </ContextMenu>
+        </contextMenu>
+    </TableView>
 </AnchorPane>
