@@ -7,6 +7,15 @@
     <groupId>groupId</groupId>
     <artifactId>quizy</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <name>Quizy</name>
+    <description>Aplikacja pobiera listę quizów ze strony quizy.wyborcza.pl</description>
+
+    <properties>
+        <rosette.api.java.binding.version>1.8.2</rosette.api.java.binding.version>
+        <jsoup.version>1.11.2</jsoup.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -47,7 +56,12 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.11.2</version>
+            <version>${jsoup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.basistech.rosette</groupId>
+            <artifactId>rosette-api</artifactId>
+            <version>${rosette.api.java.binding.version}</version>
         </dependency>
     </dependencies>
 </project>
