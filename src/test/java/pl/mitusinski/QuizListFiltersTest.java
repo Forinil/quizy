@@ -2,6 +2,7 @@ package pl.mitusinski;
 
 import javafx.collections.ObservableList;
 import org.junit.Test;
+import pl.mitusinski.language.LanguageCodes;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,11 +20,11 @@ public class QuizListFiltersTest {
 
     private QuizList initializeQuizList() {
         List<Quiz> quizList = new ArrayList<>();
-        quizList.add(new Quiz("0", "Jakiś polski quiz", "Jakiś polski quiz", new Date().toString(), "N", QuizUpdater.PL));
-        quizList.add(new Quiz("1", "Quiz in english", "English quiz", new Date().toString(), "N", QuizUpdater.EN));
-        quizList.add(new Quiz("2", "Quiz español", "Quiz español", new Date().toString(), "N", QuizUpdater.ES));
-        quizList.add(new Quiz("3", "dsafasdf", "asfasdf", new Date().toString(), "N", QuizUpdater.UNKNOWN));
-        quizList.add(new Quiz("4", "Quiz", "", new Date().toString(), "Y", QuizUpdater.UNKNOWN));
+        quizList.add(new Quiz("0", "Jakiś polski quiz", "Jakiś polski quiz", new Date().toString(), "N", LanguageCodes.PL));
+        quizList.add(new Quiz("1", "Quiz in english", "English quiz", new Date().toString(), "N", LanguageCodes.EN));
+        quizList.add(new Quiz("2", "Quiz español", "Quiz español", new Date().toString(), "N", LanguageCodes.ES));
+        quizList.add(new Quiz("3", "dsafasdf", "asfasdf", new Date().toString(), "N", LanguageCodes.UNKNOWN));
+        quizList.add(new Quiz("4", "Quiz", "", new Date().toString(), "Y", LanguageCodes.UNKNOWN));
         return new QuizList(quizList);
     }
 
@@ -41,25 +42,25 @@ public class QuizListFiltersTest {
 
     @Test
     public void getObservableQuizListFilteredByLanguagePL() {
-        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), QuizUpdater.PL);
+        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), LanguageCodes.PL);
         assertTrue(matchQuizIdList(result, "0"));
     }
 
     @Test
     public void getObservableQuizListFilteredByLanguageES() {
-        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), QuizUpdater.ES);
+        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), LanguageCodes.ES);
         assertTrue(matchQuizIdList(result, "2"));
     }
 
     @Test
     public void getObservableQuizListFilteredByLanguageEN() {
-        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), QuizUpdater.EN);
+        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), LanguageCodes.EN);
         assertTrue(matchQuizIdList(result, "1"));
     }
 
     @Test
     public void getObservableQuizListFilteredByLanguageUNKNOWN() {
-        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), QuizUpdater.UNKNOWN);
+        ObservableList<Quiz> result = filters.getObservableQuizListFilteredByLanguage(initializeQuizList(), LanguageCodes.UNKNOWN);
         assertTrue(matchQuizIdList(result, "3"));
     }
 
