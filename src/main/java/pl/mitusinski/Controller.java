@@ -34,6 +34,8 @@ public class Controller {
     private void initialize() {
     }
 
+    private QuizListFilters quizListFilters = new QuizListFilters();
+
     public void setMainHandle(Main main) {
         this.main = main;
         updateList();
@@ -44,7 +46,7 @@ public class Controller {
     }
 
     public void updateList() {
-        ObservableList<Quiz> observableQuizList = main.getQuizList().getObservableQuizList();
+        ObservableList<Quiz> observableQuizList = quizListFilters.getObservableQuizList(main.getQuizList());
         updateTableData(observableQuizList);
     }
 
@@ -59,7 +61,7 @@ public class Controller {
 
     public void filterList() {
         String filterString = searchQuery.getText();
-        updateTableData(main.getQuizList().getObservableFilteredQuizList(filterString));
+        updateTableData(quizListFilters.getObservableFilteredQuizList(main.getQuizList(), filterString));
     }
 
     public void refreshList() {
@@ -76,22 +78,22 @@ public class Controller {
     }
 
     public void polishOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.PL));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), QuizUpdater.PL));
     }
 
     public void spanishOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.ES));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), QuizUpdater.ES));
     }
 
     public void englishOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.EN));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), QuizUpdater.EN));
     }
 
     public void unknownOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.UNKNOWN));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), QuizUpdater.UNKNOWN));
     }
 
     public void allLanguages() {
-        updateTableData(main.getQuizList().getObservableFilteredQuizList(""));
+        updateTableData(quizListFilters.getObservableQuizList(main.getQuizList()));
     }
 }
