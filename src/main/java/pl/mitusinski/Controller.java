@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import pl.mitusinski.language.LanguageCodes;
 
 import java.awt.*;
 import java.io.IOException;
@@ -13,38 +13,30 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Controller {
-    private Main main;
-
-    @FXML
-    private TableView<Quiz> tableView;
-
-    @FXML
-    private TableColumn<Quiz, String> idColumn;
-
-    @FXML
-    private TableColumn<Quiz, String> titleColumn;
-
     @FXML
     public TableColumn<Quiz, String> languageColumn;
-
+    private Main main;
+    @FXML
+    private TableView<Quiz> tableView;
+    @FXML
+    private TableColumn<Quiz, String> idColumn;
+    @FXML
+    private TableColumn<Quiz, String> titleColumn;
     @FXML
     private TextField searchQuery;
+    private QuizListFilters quizListFilters = new QuizListFilters();
 
     @FXML
     private void initialize() {
     }
 
-    public void setMainHandle(Main main) {
+    void setMainHandle(Main main) {
         this.main = main;
         updateList();
     }
 
-    public void setPrimaryStage(Stage primaryStage) {
-        Stage primaryStage1 = primaryStage;
-    }
-
-    public void updateList() {
-        ObservableList<Quiz> observableQuizList = main.getQuizList().getObservableQuizList();
+    void updateList() {
+        ObservableList<Quiz> observableQuizList = quizListFilters.getObservableQuizList(main.getQuizList());
         updateTableData(observableQuizList);
     }
 
@@ -59,7 +51,7 @@ public class Controller {
 
     public void filterList() {
         String filterString = searchQuery.getText();
-        updateTableData(main.getQuizList().getObservableFilteredQuizList(filterString));
+        updateTableData(quizListFilters.getObservableFilteredQuizList(main.getQuizList(), filterString));
     }
 
     public void refreshList() {
@@ -76,22 +68,22 @@ public class Controller {
     }
 
     public void polishOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.PL));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), LanguageCodes.PL));
     }
 
     public void spanishOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.ES));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), LanguageCodes.ES));
     }
 
     public void englishOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.EN));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), LanguageCodes.EN));
     }
 
     public void unknownOnly() {
-        updateTableData(main.getQuizList().getObservableQuizListFilteredByLanguage(QuizUpdater.UNKNOWN));
+        updateTableData(quizListFilters.getObservableQuizListFilteredByLanguage(main.getQuizList(), LanguageCodes.UNKNOWN));
     }
 
     public void allLanguages() {
-        updateTableData(main.getQuizList().getObservableFilteredQuizList(""));
+        updateTableData(quizListFilters.getObservableQuizList(main.getQuizList()));
     }
 }
