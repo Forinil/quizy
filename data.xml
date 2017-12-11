@@ -3613,7 +3613,7 @@
         <corrupted>N</corrupted>
         <desc>Prezydent Duda, minister Macierewicz, premier Szydło, wiceminister Kownacki... - to politycy, którzy w ostatnim czasie uczestniczyli w wypadkach drogowych. Ale bezpieczeństwo na drodze to problem wszystkich opcji. Czy pamiętasz te zdarzenia?</desc>
         <id>8452</id>
-        <language>EN</language>
+        <language>PL</language>
         <title>Uwaga VIP!</title>
     </quiz>
     <quiz>
@@ -6853,7 +6853,7 @@
         <corrupted>N</corrupted>
         <desc></desc>
         <id>8857</id>
-        <language>EN</language>
+        <language>UNKNOWN</language>
         <title>sss</title>
     </quiz>
     <quiz>
@@ -8101,7 +8101,7 @@
         <corrupted>N</corrupted>
         <desc>Test2</desc>
         <id>9013</id>
-        <language>EN</language>
+        <language>UNKNOWN</language>
         <title>Test1</title>
     </quiz>
     <quiz>
@@ -16557,7 +16557,7 @@
         <corrupted>N</corrupted>
         <desc></desc>
         <id>10071</id>
-        <language>EN</language>
+        <language>UNKNOWN</language>
         <title>Test”</title>
     </quiz>
     <quiz>
@@ -20439,5 +20439,136 @@
         <id>10556</id>
         <language>PL</language>
         <title>35-lecie T.Love. Sprawdź, jak dobrze znasz zespół! [QUIZ]</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:57 CET 2017</added>
+        <corrupted>Y</corrupted>
+        <desc></desc>
+        <id>10557</id>
+        <language>UNKNOWN</language>
+        <title></title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:11 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10558</id>
+        <language>ES</language>
+        <title>Quiz Especial del domingo. El mejor de todos [N°10]</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:11 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc>Przed premierą filmu "Gwiezdne wojny: Ostatni Jedi" sprawdź, ile wiesz o starożytnym zakonie rycerzy
+            Jedi.
+        </desc>
+        <id>10559</id>
+        <language>PL</language>
+        <title>Ile wiesz o rycerzach Jedi? [quiz]</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:12 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10560</id>
+        <language>PL</language>
+        <title>Kawa. Quiz wiedzy ogólnej</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:12 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10561</id>
+        <language>ES</language>
+        <title>Nosotros te damos la ciudad y tú nos dices el país. Categoría: Europa</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:12 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10562</id>
+        <language>ES</language>
+        <title>Capitales Vecinas. Te damos la Capital y tú dices cual es la capital más cercana</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:12 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10563</id>
+        <language>ES</language>
+        <title>Mezcladito Espress. 30 segundo para responder 15 preguntas mezcladas de todos los temas</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:13 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10564</id>
+        <language>ES</language>
+        <title>Multitema. Un poco de todo para probar tu erudición</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:14 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10565</id>
+        <language>ES</language>
+        <title>¿Tu mente es una enciclopedia? Entonces debes responder este quiz en 30 segundos</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:14 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc>Sprawdź swój ''styl zarządzania dzieckiem'' w naszym teście. Zobacz, czy bliżej Ci do bycia matką, czy
+            ojcem - oczywiście z przymrużeniem oka.
+        </desc>
+        <id>10566</id>
+        <language>PL</language>
+        <title>Jesteś bardziej matką czy ojcem dla swojego dziecka? Sprawdź się!</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:14 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10567</id>
+        <language>ES</language>
+        <title>Quiz de Lógica Matemática. Pediste un reto. Acá te lo damos. ¿Cuánto será tu puntaje máximo?</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:14 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc>Mimo że łacina powoli umiera, nadal używamy pewnych zaczerpniętych z niej zwrotów. Odważysz się sprawdzić,
+            czy stosujesz je prawidłowo?
+        </desc>
+        <id>10568</id>
+        <language>PL</language>
+        <title>Te łacińskie zwroty spotykamy na co dzień. Czy wiesz co znaczą?</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:15 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10569</id>
+        <language>ES</language>
+        <title>Quiz en el que podrás sacar todos los puntos solo si eres un verdadero aficionado a la lectura</title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:15 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc></desc>
+        <id>10570</id>
+        <language>ES</language>
+        <title>Vive la nostalgia con este quiz que te trae tus comiquitas preferidas de los años 80s y 90s. Veámos qué
+            tanto recuerdas
+        </title>
+    </quiz>
+    <quiz>
+        <added>Mon Dec 11 19:21:15 CET 2017</added>
+        <corrupted>N</corrupted>
+        <desc>Mateusz Morawiecki został premierem za Beatę Szydło. Skoro są w tej samej partii, to muszą się w wielu
+            kwestiach zgadzać. Sprawdź czy jesteś w stanie wskazać, która wypowiedź należy do Szydło, a która do
+            Morawieckiego.
+        </desc>
+        <id>10571</id>
+        <language>PL</language>
+        <title>Kto to powiedział, Morawiecki czy Szydło?</title>
     </quiz>
 </quizlist>
