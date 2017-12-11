@@ -16,17 +16,21 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    static final String DATA_FILE = "data.xml";
+    static final String DATA_FILE_XSD = "/data.xsd";
     private static final int SCENE_HEIGHT = 400;
     private static final int SCENE_WIDTH = 700;
     private static final String MAIN_FORM = "/mainForm.fxml";
-    public static final String DATA_FILE = "data.xml";
-    public static final String DATA_FILE_XSD = "/data.xsd";
     private static final String APP_TITLE = "Quizy";
     private static final String MSG_UPDATE_IN_PROG = "Quizy - pobieranie...";
     private static final String MSG_UPDATE_COMPL = "Quizy - aktualna lista [ Nowych: %d]";
 
     private static Stage primaryStage;
     private static QuizList quizList = new QuizList();
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -49,7 +53,6 @@ public class Main extends Application {
 
             Controller controller = loader.getController();
             controller.setMainHandle(this);
-            controller.setPrimaryStage(primaryStage);
             performQuizUpdate(quizUpdater, controller);
 
             quizUpdater.update();
@@ -59,22 +62,16 @@ public class Main extends Application {
 
     }
 
-    public void performQuizUpdate(QuizUpdater quizUpdater, Controller controller) {
-        quizUpdater.getSync().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if (newValue) {
-                    primaryStage.setTitle(MSG_UPDATE_IN_PROG);
-                } else {
-                    quizList = loadQuizFromXml();
-                    controller.updateList();
-                    primaryStage.setTitle(String.format(MSG_UPDATE_COMPL, quizUpdater.getNewCount()));
-                }
-            });
-        });
-    }
-
-    public static void main(String[] args) {
-        launch(args);
+    void performQuizUpdate(QuizUpdater quizUpdater, Controller controller) {
+        quizUpdater.getSync().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+            if (newValue) {
+                primaryStage.setTitle(MSG_UPDATE_IN_PROG);
+            } else {
+                quizList = loadQuizFromXml();
+                controller.updateList();
+                primaryStage.setTitle(String.format(MSG_UPDATE_COMPL, quizUpdater.getNewCount()));
+            }
+        }));
     }
 
     private QuizList loadQuizFromXml() {
@@ -89,7 +86,7 @@ public class Main extends Application {
         return new QuizList();
     }
 
-    public QuizList getQuizList() {
+    QuizList getQuizList() {
         return quizList;
     }
 
