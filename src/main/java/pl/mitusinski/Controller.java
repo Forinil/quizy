@@ -42,12 +42,14 @@ public class Controller {
     }
 
     public void openInBrowser() {
-        try {
-            int id = new Integer(getSelectedRecordId());
-            Desktop.getDesktop().browse(new URI(QuizUpdater.getUrl(id)));
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                int id = new Integer(getSelectedRecordId());
+                Desktop.getDesktop().browse(new URI(QuizUpdater.getUrl(id)));
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void filterList() {
