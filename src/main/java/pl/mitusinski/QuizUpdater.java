@@ -4,18 +4,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.xml.sax.SAXException;
 import pl.mitusinski.language.LanguageCodes;
 import pl.mitusinski.language.LanguageRecognizer;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,6 +26,7 @@ class QuizUpdater extends Thread {
     private static final int MAX_FAILURES = 10;
     private final PropertiesManager propertiesManager = new PropertiesManager();
     private final LanguageRecognizer languageRecognizer = new LanguageRecognizer();
+    private final DataFileManager dataFileManager = new DataFileManager();
     private BooleanProperty sync = new SimpleBooleanProperty(false);
     private int count = 0;
 
@@ -53,7 +45,7 @@ class QuizUpdater extends Thread {
     @Override
     public void run() {
         sync.set(true);
-        QuizList quizList = getQuizList();
+        QuizList quizList = dataFileManager.getQuizList();
         List<Quiz> list = quizList.getQuizList();
         List<Quiz> newList = new ArrayList<>();
         list.sort(Comparator.comparing(q2 -> new Integer(q2.getId())));
@@ -64,7 +56,7 @@ class QuizUpdater extends Thread {
             while (Integer.parseInt(q.getId()) > next) {
                 Optional<Quiz> quizData = getQuizData(next);
                 quizData.ifPresent(quiz -> {
-                    if (quiz.getCorrupted().equals("N")){
+                    if (quiz.getCorrupted().equals("N")) {
                         count++;
                     }
                     newList.add(quiz);
@@ -80,7 +72,7 @@ class QuizUpdater extends Thread {
             newList.add(q);
         }
 
-        setQuizList(new QuizList(newList));
+        dataFileManager.setQuizList(new QuizList(newList));
         AtomicInteger failures = new AtomicInteger();
         while (failures.get() < MAX_FAILURES) {
             next++;
@@ -96,7 +88,7 @@ class QuizUpdater extends Thread {
                 }
             });
         }
-        setQuizList(new QuizList(newList));
+        dataFileManager.setQuizList(new QuizList(newList));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -112,42 +104,6 @@ class QuizUpdater extends Thread {
             return q.getLanguage() == null || q.getLanguage().isEmpty();
         }
 
-    }
-
-    private QuizList getQuizList() {
-        File file = new File(Main.DATA_FILE);
-        QuizList quizList = new QuizList();
-        try {
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = sf.newSchema(this.getClass().getResource(Main.DATA_FILE_XSD));
-
-            JAXBContext jaxb = JAXBContext.newInstance(QuizList.class);
-            Unmarshaller unm = jaxb.createUnmarshaller();
-            unm.setSchema(schema);
-            unm.setEventHandler(new QuizFileValidationEventHandler());
-            quizList = (QuizList) unm.unmarshal(file);
-        } catch (JAXBException | SAXException e) {
-            e.printStackTrace();
-        }
-        return quizList;
-    }
-
-    private void setQuizList(QuizList quizList) {
-        File file = new File(Main.DATA_FILE);
-        JAXBContext jaxb;
-        try {
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = sf.newSchema(this.getClass().getResource(Main.DATA_FILE_XSD));
-
-            jaxb = JAXBContext.newInstance(QuizList.class);
-            Marshaller msh = jaxb.createMarshaller();
-            msh.setSchema(schema);
-            msh.setEventHandler(new QuizFileValidationEventHandler());
-            msh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
-            msh.marshal(quizList, file);
-        } catch (JAXBException | SAXException e) {
-            e.printStackTrace();
-        }
     }
 
     private Optional<Quiz> getQuizData(int id) {

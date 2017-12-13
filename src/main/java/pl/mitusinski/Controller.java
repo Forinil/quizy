@@ -25,6 +25,7 @@ public class Controller {
     @FXML
     private TextField searchQuery;
     private QuizListFilters quizListFilters = new QuizListFilters();
+    private FileDataUpdater fileDataUpdater = new FileDataUpdater();
 
     @FXML
     private void initialize() {
@@ -43,7 +44,7 @@ public class Controller {
     public void openInBrowser() {
         new Thread(() -> {
             try {
-                int id = Integer.parseInt(tableView.getSelectionModel().getSelectedItem().getId());
+                int id = new Integer(getSelectedRecordId());
                 Desktop.getDesktop().browse(new URI(QuizUpdater.getUrl(id)));
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
@@ -87,5 +88,29 @@ public class Controller {
 
     public void allLanguages() {
         updateTableData(quizListFilters.getObservableQuizList(main.getQuizList()));
+    }
+
+    public void setPolish() {
+        updateLanguageOfSelectedElement(LanguageCodes.PL);
+    }
+
+    public void setSpanish() {
+        updateLanguageOfSelectedElement(LanguageCodes.ES);
+    }
+
+    public void setEnglish() {
+        updateLanguageOfSelectedElement(LanguageCodes.EN);
+    }
+
+    public void setUnknown() {
+        updateLanguageOfSelectedElement(LanguageCodes.UNKNOWN);
+    }
+
+    private void updateLanguageOfSelectedElement(String languageCode) {
+        fileDataUpdater.updateQuizLanguage(getSelectedRecordId(), languageCode, main.getQuizList());
+    }
+
+    private String getSelectedRecordId() {
+        return tableView.getSelectionModel().getSelectedItem().getId();
     }
 }
